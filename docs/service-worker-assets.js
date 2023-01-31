@@ -849,12 +849,16 @@
       "url": "index.html"
     },
     {
-      "hash": "sha256-YdXWBwKAwjCof0Gnfd1h30l4Oc\/BG+z1f8Vwxcu20PE=",
+      "hash": "sha256-vZta+WuqH0cs3O3smPKQHspBI8jjPtLeA+N3iy\/IOjg=",
       "url": "manifest.json"
     },
     {
       "hash": "sha256-mGg7b17j5wpMW+3KzZPcubrwqBGE33ty6Y3aLD\/13+I=",
       "url": "mitch.ico"
+    },
+    {
+      "hash": "sha256-qQWYt6IZZZO2XEyyTPJdY0R1KTKThkIf38YYaOWB\/qc=",
+      "url": "mitch.png"
     },
     {
       "hash": "sha256-6OQukRSRVCQZ4lAspqPnGKdC5pFlzy5O8ocwtV4ePrc=",
@@ -869,5 +873,5 @@
       "url": "brotliloader.min.js"
     }
   ],
-  "version": "cMdWivnX"
+  "version": "s2UHxDKA"
 };
