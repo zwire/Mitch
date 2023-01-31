@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 100%; height: 100%">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Mitch</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/css/main.css">
+    <link href="Mitch.styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="mitch.ico" />
+</head>
+
+<body style="width: 100%; height: 100%">
+    <div id="app" style="width: 100%; height: 100%">Loading...</div>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://js.arcgis.com/4.25/"></script>
+    <script src="arcgis.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+
+</html>

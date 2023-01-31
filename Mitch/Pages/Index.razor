@@ -1,0 +1,219 @@
+﻿@page "/"
+@inject IJSRuntime Js
+@inject ArcGisRuntime ArcGis
+
+<div class="container-fluid main">
+    <div id="viewDiv" class="parent" style="font-size: 14px">
+        <button class="tab btn-dark" @onclick="(_ => _menuOpened = !_menuOpened)">@_menuTabButtonFace</button>
+        @if (_menuOpened)
+        {
+            <div class="shadow p-3 mb-5 bg-light rounded menu">
+                <div style="text-align: center">
+                    <button class="btn btn-outline-secondary" style="width: 100%" disabled="@_uiDisabled" 
+                        @onclick="@(() => MenuTabClick(1))">From GNSS Log</button>
+                </div>
+
+                <br/>
+                @if (_openedMenuNumber is 1)
+                {
+                    <br />
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-success" style="width: 130px; font-size: 12px">
+                                Entrance Path<InputFile OnChange=@(async e => await InputEntrancePathAsync(e)) 
+                                    accept=".csv,.log" style="display:none" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" style="font-size: 12px" readonly="" @bind="_entrancePathInput">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-danger" style="width: 130px; font-size: 12px">
+                                Working Start Point<InputFile OnChange=@(async e => await InputStartPointAsync(e))
+                                                      accept=".csv,.log" style="display:none" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" style="font-size: 12px" @bind="_workingStartPointInput">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-danger" style="width: 130px; font-size: 12px">
+                                Working End Point<InputFile OnChange=@(async e => await InputEndPointAsync(e))
+                                                    accept=".csv,.log" style="display:none" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" style="font-size: 12px" @bind="_workingEndPointInput">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-info" style="width: 130px; font-size: 12px">
+                                Exit Path<InputFile OnChange=@(async e => await InputExitPathAsync(e))
+                                            accept=".csv,.log" style="display:none" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" style="font-size: 12px" readonly="" @bind="_exitPathInput">
+                    </div>
+                    <br />
+                    <button class="btn btn-success" style="width: 100%; text-align: center"
+                        disabled="@(!CanConfigure())" 
+                        @onclick=@(async e => await ConfigureAsync())>Configure</button>
+                    <br /><br />
+                }
+
+                <div style="text-align: center">
+                    <button class="btn btn-outline-secondary" style="width: 100%" disabled="@_uiDisabled" 
+                        @onclick="@(() => MenuTabClick(2))">From Map File</button>
+                </div>
+
+                <br/>
+                @if (_openedMenuNumber is 2)
+                {
+                    <br />
+                    <div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary" style="width: 170px">
+                                Load<InputFile OnChange=@(async e => await LoadMapFileAsync(e)) 
+                                    accept=".map,.jmap" style="display:none" />
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" readonly="" @bind="_loadingMapFileName">
+                    </div>
+                    <br />
+                }
+
+                <div style="text-align: center">
+                    <button class="btn btn-outline-secondary" style="width: 100%" disabled="@_uiDisabled"
+                        @onclick="@(() => MenuTabClick(3))">Edit and Export</button>
+                </div>
+
+                <br/>
+                @if (_openedMenuNumber is 3 && _editor is not null && _editor.WorkingPaths is not null)
+                {
+                    <table class="table table-hover" style="table-layout: fixed">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 60%">Duplicate Direction</th>
+                                <td>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="sw-auto"
+                                            @bind="@_directionRight">
+                                        <label class="custom-control-label" for="sw-auto">
+                                            @(_directionRight ? Mitch.Direction.Right : Mitch.Direction.Left)</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Working Path Count</th>
+                                <td><input type="number" class="form-control-range" min="1" step="1" 
+                                    @bind="_workingPathCount"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Working Width [m]</th>
+                                <td><input type="number" class="form-control-range" min="0.04" step="0.04" 
+                                    @bind="_workingWidth"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Points Interval [m]</th>
+                                <td><input type="number" class="form-control-range" min="0.25" step="0.25" 
+                                    @bind="_pointsInterval"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div data-spy="scroll" data-offset="0" class="scroll-info">
+                        @if (_editor.EntrancePath is not null && _editor.EntrancePath.Points.Length > 0 && !_editor.HiddenKeys.Contains(_editor.EntrancePath.Id))
+                        {
+                            <div class="d-flex">
+                                <a class="@(CheckIfSelected(_editor.EntrancePath.Id) ? "selected-color" : "") list-group-item list-group-item-action" style="width: 160px"
+                                    @onclick="@(async _ => await SelectPathAsync(_editor.EntrancePath))">@(_editor.EntrancePath.Id)</a>
+                                <div class="custom-control custom-switch" style="margin-left: 10px">
+                                    <input type="checkbox" class="custom-control-input" id="sw-start" 
+                                        @bind="@_editor.ReverseAttributes[_editor.EntrancePath.Id]">
+                                    <label class="custom-control-label" for="sw-start" 
+                                        style="height: 100%; top: 20%; font-size: 12px">Reverse</label>
+                                    @if (!CheckIfSelected(_editor.EntrancePath.Id))
+                                    {
+                                        <button class="btn btn-danger" style="margin-left: 3px" @onclick=@(async () => await DeletePathAsync(_editor.EntrancePath))>X</button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @foreach (var p in _editor.WorkingPaths.Where(p => !_editor.HiddenKeys.Contains(p.Id)))
+                        {
+                            @if (p.Points.Length > 0)
+                            {
+                                <div class="d-flex">
+                                    <a class="@(CheckIfSelected(p.Id) ? "selected-color" : "") list-group-item list-group-item-action" style="width: 160px"
+                                    @onclick="@(async _ => await SelectPathAsync(p))">@(p.Id)</a>
+                                    <div class="custom-control custom-switch" style="margin-left: 10px">
+                                        <input type="checkbox" class="custom-control-input" id="@p.Id"
+                                        @bind="@_editor.ReverseAttributes[p.Id]">
+                                        <label class="custom-control-label" for="@p.Id" style="height: 100%; top: 20%; font-size: 12px">Reverse</label>
+                                        @if (!CheckIfSelected(p.Id))
+                                        {
+                                            <button class="btn btn-danger" style="margin-left: 3px" @onclick=@(async () => await DeletePathAsync(p))>X</button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (_editor.ExitPath is not null && _editor.ExitPath.Points.Length > 0 && !_editor.HiddenKeys.Contains(_editor.ExitPath.Id))
+                        {
+                            <div class="d-flex">
+                                <a class="@(CheckIfSelected(_editor.ExitPath.Id) ? "selected-color" : "") list-group-item list-group-item-action" style="width: 160px"
+                                    @onclick="@(async _ => await SelectPathAsync(_editor.ExitPath))">@(_editor.ExitPath.Id)</a>
+                                <div class="custom-control custom-switch" style="margin-left: 10px">
+                                    <input type="checkbox" class="custom-control-input" id="sw-end" 
+                                        @bind="@_editor.ReverseAttributes[_editor.ExitPath.Id]">
+                                    <label class="custom-control-label" for="sw-end" style="height: 100%; top: 20%; font-size: 12px">Reverse</label>
+                                    @if (!CheckIfSelected(_editor.ExitPath.Id))
+                                    {
+                                        <button class="btn btn-danger" style="margin-left: 3px" @onclick=@(async () => await DeletePathAsync(_editor.ExitPath))>X</button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <br />
+                    <table class="table table-hover" style="table-layout: fixed">
+                        <tbody>
+                            @if (_editor.StartAttributes.ContainsKey(_editor.EditingPath.Id))
+                            {
+                                <tr>
+                                    <th scope="row" style="width: 60%">Start Extension</th>
+                                    <td><input type="number" class="form-control-range" step="1" style="width: 100px"
+                                        @bind="_editor.StartAttributes[_editor.EditingPath.Id]">
+                                    </td>
+                                </tr>
+                            }
+                            @if (_editor.EndAttributes.ContainsKey(_editor.EditingPath.Id))
+                            {
+                                <tr>
+                                    <th scope="row">End Extension</th>
+                                    <td><input type="number" class="form-control-range" step="1" style="width: 100px"
+                                        @bind="_editor.EndAttributes[_editor.EditingPath.Id]">
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <th scope="row">File Name</th>
+                                <td><input type="text" @bind="_mapSaveFileName" style="width: 100px"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="btn btn-dark" style="width: 100%; text-align: center" disabled="@_uiDisabled"
+                        @onclick="@(async () => await PreviewAsync())">Preview</button>
+                    <br/><br/>
+                    <div>
+                        <input type="checkbox" id="exjmap" @bind="_exportJmap">
+                        <label for="exjmap">Export As Jmap</label>
+                    </div>
+                    <button class="btn btn-success" style="width: 100%; text-align: center" disabled="@_uiDisabled" 
+                        @onclick="@(async _ => await GenerateAsync())">Generate</button>
+                    <br/>
+                    <br/>
+                }
+            </div>
+        }
+    </div>
+</div>
