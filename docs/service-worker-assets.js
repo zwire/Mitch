@@ -33,7 +33,7 @@
       "url": "_framework\/icudt_no_CJK.dat.br"
     },
     {
-      "hash": "sha256-\/+gukrQGn6drkLO0anxtqIp2A6QjlsLag+26+tXlWK4=",
+      "hash": "sha256-LJHBUlYYeNvPrMPa09K21Iednhx0lNEdfu6OAFe3FA4=",
       "url": "_framework\/blazor.boot.json.br"
     },
     {
@@ -49,7 +49,7 @@
       "url": "_framework\/Microsoft.AspNetCore.Components.dll.br"
     },
     {
-      "hash": "sha256-P3GjdxfS2h3EuT\/hiJMoK+YYRKm2X\/iwLimOUR+ICrE=",
+      "hash": "sha256-EVUm3LEzV5Cgqoo+G+mSNkVVDqmRoQ+3yiq4TjO+aDc=",
       "url": "_framework\/Microsoft.AspNetCore.Components.Web.dll.br"
     },
     {
@@ -101,7 +101,7 @@
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll.br"
     },
     {
-      "hash": "sha256-odAWfSOvvD1zKvhBWpOXklvr5HmaAET3F2UTLGoj0sc=",
+      "hash": "sha256-1IZGQPu1MYku8\/sIhb8GJgHJQhIfPzNTygTMhQTw7sY=",
       "url": "_framework\/Mitch.dll.br"
     },
     {
@@ -273,7 +273,7 @@
       "url": "_framework\/System.Threading.ThreadPool.dll.br"
     },
     {
-      "hash": "sha256-Dos2f\/lK2mKOIWJBUcq4YKUvSSjYNCJW+DGUw8njgc0=",
+      "hash": "sha256-iVPYL5Wtql0UfAe7rPBNbbF8RdYrzDFOyAufPaCUbJk=",
       "url": "_framework\/VePack.Navigation.dll.br"
     },
     {
@@ -321,5 +321,5 @@
       "url": "brotliloader.min.js"
     }
   ],
-  "version": "LyuLFEP4"
+  "version": "xHMJNPOR"
 };

@@ -10,7 +10,7 @@
       "Husty.dll": "sha256-VmBhRU09h\/+WxYrjwQ0oeC5J5xRzjUGvw++B3fL4bLI=",
       "MathNet.Numerics.dll": "sha256-g7QaYI5DhAnWUg0BEk9S9XQJ4il5HA4HTjFazn2fQTQ=",
       "Microsoft.AspNetCore.Components.dll": "sha256-j\/oKY3W6WSikTMHbINP5xqT5t3ciWBdMQV131x7Atzs=",
-      "Microsoft.AspNetCore.Components.Web.dll": "sha256-7CTVclKRumuqNBauOq4RPcIoClGRTjbz0lXN2Ww4QLo=",
+      "Microsoft.AspNetCore.Components.Web.dll": "sha256-etTbQoaniqsfLpATKvkbTGcGils6XYE+orZDpViMJHs=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-TT4mRYZpg32kAlR6oHkv\/mpngKSMfd9halJVkg63odA=",
       "Microsoft.Extensions.Configuration.Abstractions.dll": "sha256-X\/f4fDl2cuIRXeWHhK\/f2UqQbFioD+RU4a4CEh0zrrQ=",
       "Microsoft.Extensions.Configuration.dll": "sha256-DBOKSPriP2JDxVbbWrLXyD3K4\/x3RBifNBWk\/q1I39M=",
@@ -23,7 +23,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-eXvGx2jcjpTPEJoAHBsW\/VuMPbNyyU+AsuhPmkzSSRY=",
       "Microsoft.JSInterop.dll": "sha256-TJzgsN0SOkodtoEJoD8JEE\/cRiwO1UBqdKlMdN33w3I=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-ClhDy3j6C2coeaYSd71VzhinK6w5QGa2ViwhRhQ6L40=",
-      "Mitch.dll": "sha256-qA2WyeGtJWrEpQPeUfLO7cmGv214XUuteeNFWqcED7Y=",
+      "Mitch.dll": "sha256-XUzgkgyzNrYGRzVS+Btd5msehmuSFW2h0sI2eLWrUN4=",
       "netstandard.dll": "sha256-eHY9LQxkMMkQWtVw97xPjcj8m+Ura2Y13ihK5oH+Dvo=",
       "ProjNET.dll": "sha256-T5w29\/1mxEpsUIJYNAArXMCZi\/lAgkQw7TFYH8CfYpU=",
       "System.Collections.Concurrent.dll": "sha256-L7bu389Tf5enjMuHUoe0SbyNKwt5R2LH4bOtDu6vtug=",
@@ -66,7 +66,7 @@
       "System.Threading.Tasks.Parallel.dll": "sha256-cgaTQ+uszLrgn\/HeohYWwqwInKeFVKDCqmULE0AaX6s=",
       "System.Threading.Thread.dll": "sha256-qoPvo2xnBZr3OPGs1eeBUihvLFro0kwujPdzqf6ysYw=",
       "System.Threading.ThreadPool.dll": "sha256-d4EPVtU5VYWUgdMShXJl9pygPGXYr1gIS53\/\/bGY1fU=",
-      "VePack.Navigation.dll": "sha256-Zj\/gx0XeyBU1CZO1tWAj3Faj\/bOhxG0kV4VbwdgfmlQ="
+      "VePack.Navigation.dll": "sha256-jyz6QADcoOaIa\/\/4H73hlmLyyL813YqZkbIi7RU4R0A="
     },
     "extensions": null,
     "lazyAssembly": null,

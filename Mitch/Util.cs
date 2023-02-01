@@ -18,7 +18,7 @@ public static class Util
         return Encoding.UTF8.GetString(bytes);
     }
 
-    public static WgsPathData? ExtractPathFromLog(
+    public static WgsPathData? ExtractPathFromNmeaSentence(
         IEnumerable<string> lines,
         Func<WgsPointData, bool>? filter = default
     )
@@ -30,7 +30,15 @@ public static class Util
         {
             if (line is null) continue;
             var words = line.Split(',', '\t');
-            if (words.Length < 7 || !words.First().Contains("GGA")) continue;
+            for (int i = 0; i < words.Length; i++)
+            {
+                if (words[i].Contains("GGA"))
+                {
+                    words = words.Skip(i).ToArray();
+                    break;
+                }
+            }
+            if (words.Length < 7) continue;
             if (double.TryParse(words[2], out var latdmm) &&
                 double.TryParse(words[4], out var londmm) &&
                 int.TryParse(words[6], out var status)
@@ -49,7 +57,7 @@ public static class Util
         return null;
     }
 
-    public static WgsPathData? ExtractPathFromCsv(
+    public static WgsPathData? ExtractPathFromCsvWithHeader(
         string[] lines,
         Func<WgsPointData, bool>? filter = default
     )
@@ -62,16 +70,9 @@ public static class Util
         var lonPos = -1;
         for (int i = 0; i < header.Length; i++)
         {
-            if (header[i].Contains("Status") || 
-                header[i].Contains("status")
-            ) statusPos = i;
-            else if (header[i].Contains("Latitude") || 
-                header[i].Contains("latitude")
-            ) latPos = i;
-            else if (header[i].Contains("Longitude") || 
-                header[i].Contains("Lontitude") || 
-                header[i].Contains("longitude")
-            ) lonPos = i;
+            if (header[i].ToLower().Contains("status")) statusPos = i;
+            else if (header[i].ToLower().Contains("lat")) latPos = i;
+            else if (header[i].ToLower().Contains("lon")) lonPos = i;
         }
         if (statusPos is not -1 && latPos is not -1 && lonPos is not -1)
         {
@@ -97,6 +98,16 @@ public static class Util
         return null;
     }
 
+    public static WgsPathData? LoadGnssLog(
+        string[] lines,
+        Func<WgsPointData, bool>? filter = default
+    )
+    {
+        if (ExtractPathFromNmeaSentence(lines, filter) is WgsPathData p0) return p0;
+        if (ExtractPathFromCsvWithHeader(lines, filter) is WgsPathData p1) return p1;
+        return null;
+    }
+
     public static string ToMap(this WgsMapData map)
     {
         var output = "";
@@ -108,7 +119,6 @@ public static class Util
 
     public static string ToPln(
         WgsMapData map,
-        int pathCount, 
         double width, 
         Direction direction
     )
@@ -126,7 +136,7 @@ public static class Util
         output += "Working plan for cultivating\n";
         output += $"{map.Name}.map\t;navigation map name\n";
         output += $"{width:f2}\t;Work width [m]\n";
-        output += $"{pathCount}\t;Total path number\n";
+        output += $"{workingPathCount}\t;Total path number\n";
         if (entrancePathExists)
             output += "0\t";
         for (int i = 0; i < workingPathCount; i++)
@@ -150,8 +160,7 @@ public static class Util
             "9215" => new WgsPathData(path.Points.Select(p => new WgsPointData(p.Latitude, p.Longitude)).ToArray(), "Transfer"),
             _ => new WgsPathData(path.Points.Select(p => new WgsPointData(p.Latitude, p.Longitude)).ToArray(), "Work")
         }).ToList();
-        var workingCount = paths.Where(x => x.Id is "Work").Count();
-        var jmap = new JmapData(Enumerable.Range(1, workingCount).ToArray(), new WgsMapData(map.Name, paths));
+        var jmap = new JmapData(Enumerable.Range(1, paths.Count).ToArray(), new WgsMapData(paths, map.Name));
         return JsonSerializer.Serialize(jmap, new JsonSerializerOptions() { WriteIndented = true });
     }
 
@@ -204,7 +213,7 @@ public static class Util
         if (returnPoints.Count > 0)
             paths.Add(new(returnPoints.ToArray(), "9215"));
         if (paths.Any())
-            return new("", paths);
+            return new(paths, "");
         return null;
     }
 
@@ -232,7 +241,7 @@ public static class Util
             paths.AddRange(workingPaths);
         if (returnPath is not null)
             paths.Add(new(returnPath.Points.ToArray(), "9215"));
-        return new WgsMapData("", paths);
+        return new WgsMapData(paths, "");
     }
 
     public static WgsPathData CreateFreeCurvePath(WgsPathData path, double interval)

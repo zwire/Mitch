@@ -166,7 +166,7 @@ public record class Editor(
         paths.Add(entrancePath);
         paths.AddRange(new List<WgsPathData>(workingPaths));
         paths.Add(returnPath);
-        var configuredMap = new WgsMapData("", paths);
+        var configuredMap = new WgsMapData(paths, "");
 
         return new(
             configuredMap, direction, startAttributes, endAttributes, reverseAttributes,
@@ -222,35 +222,38 @@ public record class Editor(
             }
         }
 
-        var num = int.Parse(workingPaths[^1].Id);
-        var additionalCount = workingPathCount - workingPaths.Count;
-        for (int i = 0; i < additionalCount; i++)
+        if (workingPaths.Any())
         {
-            do { num += 2; }
-            while (HiddenKeys.Contains($"{num}"));
-            var index = (num - int.Parse(rootPaths[0].Id)) * 0.5;
-            var p = rootPaths[0].Points.DuplicateLineSegmentPaths(PathDirection, WorkingWidth * index, 2)[1];
-            workingPaths.Add(new(p, $"{num}"));
-        }
-
-        if (direction != PathDirection || workingWidth != WorkingWidth || pointsInterval != PointsInterval)
-        {
-            for (int i = 0; i < workingPaths.Count; i++)
+            var num = int.Parse(workingPaths[^1].Id);
+            var additionalCount = workingPathCount - workingPaths.Count;
+            for (int i = 0; i < additionalCount; i++)
             {
-                if (HiddenKeys.Contains(workingPaths[i].Id)) continue;
-                var index = (int.Parse(workingPaths[i].Id) - int.Parse(rootPaths[0].Id)) * 0.5;
-                var w = direction == PathDirection
-                    ? index * (workingWidth - WorkingWidth)
-                    : index * (workingWidth + WorkingWidth);
-                workingPaths[i] = new(
-                    workingPaths[i].Points.DuplicateLineSegmentPaths(direction, w, 2)[1].ToArray(),
-                    workingPaths[i].Id
-                );
-                if (pointsInterval != PointsInterval)
-                    workingPaths[i] = new(Util.CreateLineSegmentPathBetweenTwoPoints(
-                        workingPaths[i].Points[0], workingPaths[i].Points[^1], pointsInterval),
+                do { num += 2; }
+                while (HiddenKeys.Contains($"{num}"));
+                var index = (num - int.Parse(rootPaths[0].Id)) * 0.5;
+                var p = rootPaths[0].Points.DuplicateLineSegmentPaths(PathDirection, WorkingWidth * index, 2)[1];
+                workingPaths.Add(new(p, $"{num}"));
+            }
+
+            if (direction != PathDirection || workingWidth != WorkingWidth || pointsInterval != PointsInterval)
+            {
+                for (int i = 0; i < workingPaths.Count; i++)
+                {
+                    if (HiddenKeys.Contains(workingPaths[i].Id)) continue;
+                    var index = (int.Parse(workingPaths[i].Id) - int.Parse(rootPaths[0].Id)) * 0.5;
+                    var w = direction == PathDirection
+                        ? index * (workingWidth - WorkingWidth)
+                        : index * (workingWidth + WorkingWidth);
+                    workingPaths[i] = new(
+                        workingPaths[i].Points.DuplicateLineSegmentPaths(direction, w, 2)[1].ToArray(),
                         workingPaths[i].Id
                     );
+                    if (pointsInterval != PointsInterval)
+                        workingPaths[i] = new(Util.CreateLineSegmentPathBetweenTwoPoints(
+                            workingPaths[i].Points[0], workingPaths[i].Points[^1], pointsInterval),
+                            workingPaths[i].Id
+                        );
+                }
             }
         }
 

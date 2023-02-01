@@ -75,52 +75,62 @@ partial class Index
 
     public async Task InputEntrancePathAsync(InputFileChangeEventArgs e)
     {
-        _entrancePathInput = e.File.Name;
-        var txt = await e.File.OpenReadStream().ToStringAsync();
-        var points = Path.GetExtension(e.File.Name) switch
+        var txt = await e.File.OpenReadStream(e.File.Size).ToStringAsync();
+        var path = Util.LoadGnssLog(txt.Split('\n'), p => p.Id is "2" or "4" or "5");
+        if (path is not null)
         {
-            ".csv" => Util.ExtractPathFromCsv(txt.Split('\n')!)!.Points,
-            ".log" => Util.ExtractPathFromLog(txt.Split('\n')!)!.Points,
-            _ => throw new Exception()
-        };
-        _entrancePath = new(points, "8705");
+            _entrancePath = new(path.Points, "8705");
+            _entrancePathInput = e.File.Name;
+        }
+        else
+        {
+            _entrancePathInput = "input source is invalid";
+        }
     }
 
     public async Task InputExitPathAsync(InputFileChangeEventArgs e)
     {
-        _exitPathInput = e.File.Name;
-        var txt = await e.File.OpenReadStream().ToStringAsync();
-        var points = Path.GetExtension(e.File.Name) switch
+        var txt = await e.File.OpenReadStream(e.File.Size).ToStringAsync();
+        var path = Util.LoadGnssLog(txt.Split('\n'), p => p.Id is "2" or "4" or "5");
+        if (path is not null)
         {
-            ".csv" => Util.ExtractPathFromCsv(txt.Split('\n')!)!.Points,
-            ".log" => Util.ExtractPathFromLog(txt.Split('\n')!)!.Points,
-            _ => throw new Exception()
-        };
-        _exitPath = new(points, "9215");
+            _exitPath = new(path.Points, "9215");
+            _exitPathInput = e.File.Name;
+        }
+        else
+        {
+            _exitPathInput = "input source is invalid";
+        }
     }
 
     public async Task InputStartPointAsync(InputFileChangeEventArgs e)
     {
-        var txt = await e.File.OpenReadStream().ToStringAsync();
-        _workingStartPoint = Path.GetExtension(e.File.Name) switch
+        var txt = await e.File.OpenReadStream(e.File.Size).ToStringAsync();
+        var path = Util.LoadGnssLog(txt.Split('\n'), p => p.Id is "4");
+        if (path is not null)
         {
-            ".csv" => Util.ExtractPathFromCsv(txt.Split('\n')!, p => p.Id is "4")!.Points?.FirstOrDefault(),
-            ".log" => Util.ExtractPathFromLog(txt.Split('\n')!, p => p.Id is "4")!.Points?.FirstOrDefault(),
-            _ => throw new Exception()
-        };
-        _workingStartPointInput = _workingStartPoint is null ? "No fixed point exists !" : e.File.Name;
+            _workingStartPoint = path.Points.First();
+            _workingStartPointInput = e.File.Name;
+        }
+        else
+        {
+            _workingStartPointInput = "input source is invalid";
+        }
     }
 
     public async Task InputEndPointAsync(InputFileChangeEventArgs e)
     {
-        var txt = await e.File.OpenReadStream().ToStringAsync();
-        _workingEndPoint = Path.GetExtension(e.File.Name) switch
+        var txt = await e.File.OpenReadStream(e.File.Size).ToStringAsync();
+        var path = Util.LoadGnssLog(txt.Split('\n'), p => p.Id is "4");
+        if (path is not null)
         {
-            ".csv" => Util.ExtractPathFromCsv(txt.Split('\n')!, p => p.Id is "4")!.Points?.FirstOrDefault(),
-            ".log" => Util.ExtractPathFromLog(txt.Split('\n')!, p => p.Id is "4")!.Points?.FirstOrDefault(),
-            _ => throw new Exception()
-        };
-        _workingEndPointInput = _workingEndPoint is null ? "No fixed point exists !" : e.File.Name;
+            _workingEndPoint = path.Points.First();
+            _workingEndPointInput = e.File.Name;
+        }
+        else
+        {
+            _workingEndPointInput = "input source is invalid";
+        }
     }
 
     public bool CanConfigure()
@@ -246,7 +256,7 @@ partial class Index
         if (_editor.ExitPath is not null && _editor.ExitPath.Points.Length > 0)
             paths.Add(_editor.ExitPath);
         var direction = _editor.WorkingPaths.Count > 0 ? _editor.PathDirection : Direction.Left;
-        var map = new WgsMapData(_mapSaveFileName, paths);
+        var map = new WgsMapData(paths, _mapSaveFileName);
         MemoryStream ms;
         DotNetStreamReference streamRef;
         if (_exportJmap)
@@ -260,7 +270,7 @@ partial class Index
             ms = new(Encoding.UTF8.GetBytes(Util.ToMap(map)));
             streamRef = new(ms);
             await Js.InvokeVoidAsync("downloadFileFromStream", $"{map.Name}.map", streamRef);
-            ms = new(Encoding.UTF8.GetBytes(Util.ToPln(map, _workingPathCount, _workingWidth, direction)));
+            ms = new(Encoding.UTF8.GetBytes(Util.ToPln(map, _workingWidth, direction)));
             streamRef = new(ms);
             await Js.InvokeVoidAsync("downloadFileFromStream", $"{map.Name}.pln", streamRef);
         }
