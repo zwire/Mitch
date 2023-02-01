@@ -23,7 +23,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-eXvGx2jcjpTPEJoAHBsW\/VuMPbNyyU+AsuhPmkzSSRY=",
       "Microsoft.JSInterop.dll": "sha256-TJzgsN0SOkodtoEJoD8JEE\/cRiwO1UBqdKlMdN33w3I=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-ClhDy3j6C2coeaYSd71VzhinK6w5QGa2ViwhRhQ6L40=",
-      "Mitch.dll": "sha256-WvEpfnxFkyXnLMiBf9QE6ENxLet5YXYl\/0D8tUPxx+0=",
+      "Mitch.dll": "sha256-qA2WyeGtJWrEpQPeUfLO7cmGv214XUuteeNFWqcED7Y=",
       "netstandard.dll": "sha256-eHY9LQxkMMkQWtVw97xPjcj8m+Ura2Y13ihK5oH+Dvo=",
       "ProjNET.dll": "sha256-T5w29\/1mxEpsUIJYNAArXMCZi\/lAgkQw7TFYH8CfYpU=",
       "System.Collections.Concurrent.dll": "sha256-L7bu389Tf5enjMuHUoe0SbyNKwt5R2LH4bOtDu6vtug=",
@@ -66,7 +66,7 @@
       "System.Threading.Tasks.Parallel.dll": "sha256-cgaTQ+uszLrgn\/HeohYWwqwInKeFVKDCqmULE0AaX6s=",
       "System.Threading.Thread.dll": "sha256-qoPvo2xnBZr3OPGs1eeBUihvLFro0kwujPdzqf6ysYw=",
       "System.Threading.ThreadPool.dll": "sha256-d4EPVtU5VYWUgdMShXJl9pygPGXYr1gIS53\/\/bGY1fU=",
-      "VePack.Navigation.dll": "sha256-NAZccF08D1ZV0nw2He\/aKDPv92FHtxbGoec0uMydmzc="
+      "VePack.Navigation.dll": "sha256-Zj\/gx0XeyBU1CZO1tWAj3Faj\/bOhxG0kV4VbwdgfmlQ="
     },
     "extensions": null,
     "lazyAssembly": null,
