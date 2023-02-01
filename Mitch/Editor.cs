@@ -125,13 +125,29 @@ public record class Editor(
         var pathCodes = new List<string>();
 
         await Gis.ClearMap();
-        foreach (var path in workingPaths)
+        if (workingPaths.Any())
         {
-            startAttributes.Add(path.Id, 0);
-            endAttributes.Add(path.Id, 0);
-            reverseAttributes.Add(path.Id, false);
-            pathCodes.Add(path.Id);
-            await Gis.SetPath(path, Colors.WorkingPathColor);
+            var rootPoint0 = workingPaths[0].Points[0].ToUtm();
+            var rootPoint1 = workingPaths[0].Points[^1].ToUtm();
+            var vec0 = new Vector2D(rootPoint0, rootPoint1);
+            for (int i = 0; i < workingPaths.Count; i++)
+            {
+                var tmp = workingPaths[i];
+                var p0 = tmp.Points[0].ToUtm();
+                var p1 = tmp.Points[^1].ToUtm();
+                var vec1 = new Vector2D(p0, p1);
+                startAttributes.Add(tmp.Id, 0);
+                endAttributes.Add(tmp.Id, 0);
+                reverseAttributes.Add(tmp.Id, false);
+                pathCodes.Add(tmp.Id);
+                if (Math.Abs(vec0.GetClockwiseAngleFrom(vec1).Degree) > 90)
+                {
+                    tmp = tmp.GetReverse();
+                    reverseAttributes[tmp.Id] = true;
+                }
+                workingPaths[i] = tmp;
+                await Gis.SetPath(workingPaths[i], Colors.WorkingPathColor);
+            }
         }
         if (entrancePath is not null && entrancePath.Points.Length > 0)
         {
