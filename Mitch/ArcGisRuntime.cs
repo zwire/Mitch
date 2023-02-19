@@ -1,5 +1,5 @@
 ﻿using Microsoft.JSInterop;
-using VePack.Navigation;
+using VePack.Guidance;
 
 namespace Mitch;
 

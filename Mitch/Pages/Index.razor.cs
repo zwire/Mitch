@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using VePack.Navigation;
+using VePack.Guidance;
 
 namespace Mitch.Pages;
 
