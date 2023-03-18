@@ -11,15 +11,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.2" />
+    <PackageReference Include="VePack.Guidance" Version="1.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
     <GHPages>true</GHPages>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\VePack\Lib\VePack.Guidance\VePack.Guidance.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />

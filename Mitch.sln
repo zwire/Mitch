@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mitch", "Mitch\Mitch.csproj", "{1E02A12C-DAAF-4DDA-9FB0-8C448705FC3B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VePack.Guidance", "..\VePack\Lib\VePack.Guidance\VePack.Guidance.csproj", "{8FC3657B-D86E-46FC-8CDF-495E100B0052}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{1E02A12C-DAAF-4DDA-9FB0-8C448705FC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E02A12C-DAAF-4DDA-9FB0-8C448705FC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E02A12C-DAAF-4DDA-9FB0-8C448705FC3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8FC3657B-D86E-46FC-8CDF-495E100B0052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8FC3657B-D86E-46FC-8CDF-495E100B0052}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8FC3657B-D86E-46FC-8CDF-495E100B0052}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FC3657B-D86E-46FC-8CDF-495E100B0052}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
